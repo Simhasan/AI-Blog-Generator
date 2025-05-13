@@ -7,12 +7,11 @@ from datetime import datetime
 import uuid
 import re
 
-# Initialize Cohere API client
 COHERE_API_KEY = st.secrets["COHERE_API_KEY"]
 UNSPLASH_ACCESS_KEY = st.secrets["UNSPLASH_ACCESS_KEY"]
 COHERE_API_URL = "https://api.cohere.ai/v1/generate"
 
-# Blog generation function using Cohere API
+
 def generate_blog(topic, tone):
     prompt = f"""
     Write a comprehensive blog post about {topic} in a {tone} tone. The blog should be engaging and well-structured with:
@@ -43,7 +42,7 @@ def generate_blog(topic, tone):
     else:
         raise Exception(f"API request failed: {response.text}")
 
-# Image search function using Unsplash
+
 def get_images(topic, count=3):
     url = f"https://api.unsplash.com/search/photos?query={topic}&per_page={count}&client_id={UNSPLASH_ACCESS_KEY}"
     response = requests.get(url)
@@ -51,19 +50,19 @@ def get_images(topic, count=3):
         return [photo['urls']['regular'] for photo in response.json()['results']]
     return []
 
-# Word count and reading time
+
 def calculate_stats(text):
     words = len(text.split())
-    reading_time = round(words / 200)  # Average reading speed: 200 words/min
+    reading_time = round(words / 200)  
     return words, reading_time
 
-# Main Streamlit app
+
 st.set_page_config(page_title="Blog Generator", layout="wide")
 
 st.title("AI Blog Post Generator")
 st.markdown("Create engaging blog posts with AI in just a few clicks!")
 
-# Input section
+
 with st.form("blog_form"):
     col1, col2 = st.columns(2)
     with col1:
@@ -72,27 +71,22 @@ with st.form("blog_form"):
         tone = st.selectbox("Tone of Writing", ["Professional", "Friendly", "Persuasive", "Witty"])
     submitted = st.form_submit_button("Generate Blog")
 
-# Output section
+
 if submitted and topic:
     with st.spinner("Generating your blog post..."):
         try:
-            # Generate blog content
+            
             blog_content = generate_blog(topic, tone)
-            
-            # Get related images
+               
             images = get_images(topic)
-            
-            # Calculate stats
+    
             word_count, reading_time = calculate_stats(blog_content)
             
-            # Display blog
             st.markdown("## Generated Blog Post")
             st.markdown(f"**Word Count:** {word_count} | **Estimated Reading Time:** {reading_time} minutes")
             
-            # Display blog content
             st.markdown(blog_content)
-            
-            # Display images
+        
             if images:
                 st.markdown("### Related Images")
                 cols = st.columns(3)
@@ -100,7 +94,6 @@ if submitted and topic:
                     with cols[i % 3]:
                         st.image(img, use_column_width=True)
             
-            # Export options
             st.markdown("### Export Options")
             col1, col2, col3 = st.columns(3)
             
@@ -128,12 +121,11 @@ if submitted and topic:
                 )
         except Exception as e:
             st.error(f"Error generating blog: {str(e)}")
-
-# Embed code for customer websites
+            
 st.markdown("### Embed This Tool")
 st.code(f'<iframe src="{st.get_option("browser.serverAddress")}" width="100%" height="600px"></iframe>', language="html")
 
-# Additional feature: Save blog to session
+
 if "blogs" not in st.session_state:
     st.session_state.blogs = []
 if submitted and topic:
@@ -145,7 +137,6 @@ if submitted and topic:
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
 
-# Display saved blogs
 if st.session_state.blogs:
     st.markdown("### Saved Blogs")
     for blog in st.session_state.blogs:
