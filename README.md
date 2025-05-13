@@ -1,4 +1,5 @@
 AI Blog Post Generator
+
 A Streamlit web application that generates blog posts using Cohere's API and fetches related images from Unsplash. Users can input a blog topic, select a tone, and generate a structured blog post with export options.
 Features
 
