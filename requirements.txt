@@ -1,4 +1,4 @@
 streamlit==1.31.0
-requests==2.31.0
+requests==2.32.4
 pyperclip==1.8.2
 markdown==3.5.2
